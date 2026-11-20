@@ -1,5 +1,7 @@
+'use client'
+
 import Link from 'next/link'
-import { ArrowRight, Mail, Lock, ArrowLeft } from 'lucide-react'
+import { ArrowRight, Mail, Lock, ArrowLeft, Bot } from 'lucide-react'
 import { useState } from 'react'
 
 export default function LoginPage() {

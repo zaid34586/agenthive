@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import { ArrowRight, Bot, TrendingUp, Activity, Play, Users, Shield, RefreshCw } from 'lucide-react'
 import { useState, useEffect } from 'react'
@@ -6,12 +8,21 @@ export default function DashboardPage() {
   const [stats, setStats] = useState({ total_tasks: 0, active: 0, completed: 0 })
   const [recentTasks, setRecentTasks] = useState([])
   const [loading, setLoading] = useState(true)
-  const token = localStorage.getItem('token')
+  const [token, setToken] = useState<string | null>(null)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
+    if (typeof window !== 'undefined') {
+      setToken(localStorage.getItem('token'))
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!mounted) return
     fetchStats()
     fetchTasks()
-  }, [])
+  }, [mounted])
 
   const fetchStats = async () => {
     try {
@@ -63,8 +74,10 @@ export default function DashboardPage() {
     }
   }
 
-  if (!token) {
-    window.location.href = '/login'
+  if (!mounted || !token) {
+    if (mounted && !token) {
+      window.location.href = '/login'
+    }
     return null
   }
 
