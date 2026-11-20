@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <title>Login — AgentHive</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0a0e17; --fg:#f1f5f9; --muted:#64748b; --accent:#2563eb; --card:#1e293b; --border:#334155; }
+    * { box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--fg); margin:0; }
+    a { color: var(--accent); text-decoration: none; }
+    .input { width:100%; padding:10px 14px; border-radius:6px; border:1px solid var(--border); background:var(--bg-subtle); color:var(--fg); font-size:14px; }
+    .input:focus { outline:none; border-color:var(--accent); }
+    .btn { width:100%; padding:12px; border-radius:6px; font-weight:600; background:var(--accent); color:white; border:none; cursor:pointer; }
+    .btn:hover { background:#1d4ed8; }
+    .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:32px; }
+  </style>
+</head>
+<body class="flex items-center justify-center min-h-screen px-4">
+  <div class="max-w-md w-full">
+    <div class="card mx-auto mb-8">
+      <div class="text-center mb-8">
+        <div class="font-bold text-xl tracking-tight">AgentHive</div>
+        <p class="text-sm text-muted">Welcome back</p>
+      </div>
+      <form id="login-form" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-2 text-muted">Email</label>
+          <input type="email" name="username" required class="input" placeholder="you@example.com">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2 text-muted">Password</label>
+          <input type="password" name="password" required class="input" placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn">Sign In</button>
+      </form>
+      <p class="text-center text-sm text-muted mt-6">
+        Don't have an account? <a href="/signup" class="font-medium">Sign up</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const params = new URLSearchParams(formData).toString();
+      const r = await fetch('/auth/token', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: params
+      });
+      if (r.ok) {
+        const data = await r.json();
+        localStorage.setItem('agenthive_token', data.access_token);
+        window.location.href = '/dashboard';
+      } else {
+        alert('Invalid email or password');
+      }
+    });
+  </script>
+</body>
+</html>

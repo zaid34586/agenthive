@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}AgentHive{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0a0e17; --bg-subtle:#111827; --fg:#f1f5f9; --muted:#64748b; --accent:#2563eb; --card:#1e293b; --border:#334155; }
+    * { box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--fg); margin:0; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: #1d4ed8; }
+    .btn { display:inline-block; padding:12px 20px; border-radius:6px; font-weight:600; cursor:pointer; transition:.2s; border:none; }
+    .btn-primary { background:var(--accent); color:white; }
+    .btn-primary:hover { background:#1d4ed8; }
+    .btn-ghost { background:transparent; color:var(--fg); border:1px solid var(--border); }
+    .btn-ghost:hover { border-color:#475569; }
+    .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; }
+    .heading { font-size:2.25rem; font-weight:700; line-height:1.1; margin-bottom:0.5rem; }
+    .subheading { color:var(--muted); font-size:1rem; margin-bottom:2rem; }
+    .feature-card { background:var(--bg-subtle); border-radius:10px; padding:24px; text-align:center; transition:.3s; }
+    .feature-card:hover { background:var(--card); transform:translateY(-4px); }
+    .stat { text-align:center; }
+    .stat-number { font-size:2.5rem; font-weight:700; color:var(--accent); }
+    .stat-label { color:var(--muted); font-size:0.875rem; margin-top:4px; }
+    @media (max-width:640px) { .heading { font-size:1.75rem; } }
+  </style>
+</head>
+<body>
+  <nav class="border-b border-border px-6 py-4">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <a href="/" class="font-bold text-xl tracking-tight">AgentHive</a>
+      <div class="hidden sm:flex items-center gap-4">
+        <a href="/" class="text-sm text-muted hover:text-fg">Home</a>
+        <a href="/pricing" class="text-sm text-muted hover:text-fg">Pricing</a>
+        <a href="/login" class="text-sm font-medium">Login</a>
+        <a href="/signup" class="btn btn-primary">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-7xl mx-auto py-12 px-6">
+    <div class="text-center mb-16">
+      <h1 class="heading">Turn Ideas into Income</h1>
+      <p class="subheading">Tell the Head Agent what you want → specialist agents research, analyze & create → get a premium report in seconds.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6 items-center">
+      <div>
+        <h3 class="font-semibold text-lg mb-3">How it works</h3>
+        <ol class="list-decimal list-inside space-y-4 text-sm text-muted">
+          <li><strong>Describe your task</strong> in the dashboard</li>
+          <li><strong>Head Agent</strong> breaks it into specialist subtasks</li>
+          <li><strong>5 agents</strong> research, analyze & create in parallel</li>
+          <li><strong>Live log</strong> shows every step</li>
+          <li><strong>Premium report</strong> delivered to your dashboard</li>
+        </ol>
+        <a href="/signup" class="btn btn-primary mt-6 block w-fit">Start Building →</a>
+      </div>
+      <div class="feature-card sm:p-6">
+        <h3 class="font-semibold text-lg mb-3">🤖 5 Agent Team</h3>
+        <div class="grid grid-cols-2 gap-4 mt-4 text-xs text-muted">
+          <div>🔍 Trend Scout</div><div>💰 Analyst</div>
+          <div>🎬 Creative Studio</div><div>📱 Social Manager</div><div>🧠 Head Agent</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-16 grid cols-1 sm:grid-cols-2 gap-6">
+      <div class="feature-card">
+        <h3 class="font-semibold text-lg mb-3">🔍 Trend Scout</h3>
+        <p class="text-sm text-muted mb-3">Scours internet + e-commerce for the hottest trending products before market saturation.</p>
+      </div>
+      <div class="feature-card">
+        <h3 class="font-semibold text-lg mb-3">💰 Analyst</h3>
+        <p class="text-sm text-muted mb-3">Tracks money, traffic & stage-of-sale data → KPIs & revenue forecasts.</p>
+      </div>
+      <div class="feature-card">
+        <h3 class="font-semibold text-lg mb-3">🎬 Creative Studio</h3>
+        <p class="text-sm text-muted mb-3">Ads creator + video scripts + UGC prompts — all ready to post.</p>
+      </div>
+      <div class="feature-card">
+        <h3 class="font-semibold text-lg mb-3">📱 Social Manager</h3>
+        <p class="text-sm text-muted mb-3">Posts, comments, DM replies & traffic management — auto or manual.</p>
+      </div>
+    </div>
+
+    <footer class="border-t border-border pt-12 text-center text-sm text-muted">
+      <p>AgentHive SaaS — Multi-Agent Workspace · <a href="/login">Login</a> to start</p>
+    </footer>
+  </main>
+</body>
+</html>

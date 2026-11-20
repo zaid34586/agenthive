@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <title>Dashboard — AgentHive</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0a0e17; --bg-subtle:#111827; --fg:#f1f5f9; --muted:#64748b; --accent:#2563eb; --card:#1e293b; --border:#334155; }
+    * { box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--fg); margin:0; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: #1d4ed8; }
+    .btn { display:inline-block; padding:10px 16px; border-radius:6px; font-weight:600; cursor:pointer; transition:.2s; border:none; }
+    .btn-primary { background:var(--accent); color:white; }
+    .btn-primary:hover { background:#1d4ed8; }
+    .btn-ghost { background:transparent; color:var(--fg); border:1px solid var(--border); }
+    .btn-ghost:hover { border-color:#475569; }
+    .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; }
+    .stat-number { font-size:1.75rem; font-weight:700; color:var(--accent); }
+    .agent-card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px; margin-bottom:12px; }
+    .agent-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+    .agent-name { font-weight:600; font-size:0.95rem; }
+    .agent-type { font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--muted); background:var(--bg-subtle); padding:2px 8px; border-radius:4px; }
+    .agent-status { font-size:0.75rem; font-weight:600; color:#10b95f; }
+    .live-log { background:var(--bg-subtle); border-radius:8px; padding:12px; height:240px; overflow:auto; font-size:0.75rem; color:#9ca3af; white-space:pre-wrap; }
+    .task-row { cursor:pointer; padding:12px 0; border-bottom:1px solid var(--border); transition:.2s; }
+    .task-row:hover { background:var(--bg-subtle); }
+    .tag { display:inline-block; padding:2px 8px; border-radius:999px; font-size:0.65rem; font-weight:600; margin:2px; }
+    .tag-running { background:#3b82f620; color:#60a5fa; }
+    .tag-completed { background:#10b95f20; color:#34d399; }
+    .tag-failed { background:#ef444420; color:#f87171; }
+    .nav-tab { padding:8px 16px; border-radius:8px; font-size:0.875rem; color:var(--muted); cursor:pointer; transition:.2s; border:none; background:none; }
+    .nav-tab.active { background:var(--accent); color:white; }
+    .input { width:100%; padding:10px 14px; border-radius:6px; border:1px solid var(--border); background:var(--bg-subtle); color:var(--fg); font-size:14px; }
+    .input:focus { outline:none; border-color:var(--accent); }
+  </style>
+</head>
+<body>
+  <nav class="border-b border-border px-6 py-4">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <a href="/" class="font-bold text-xl tracking-tight">AgentHive</a>
+      <div class="flex items-center gap-4">
+        <span class="text-sm text-muted">Hello, {{ user.email.split('@')[0] }}</span>
+        <a href="/pricing" class="text-sm text-muted hover:text-fg">Pricing</a>
+        <a href="/auth/logout" class="text-sm font-medium text-red-400">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-7xl mx-auto py-6">
+    <!-- Tabs -->
+    <div class="flex gap-2 mb-6">
+      <button class="nav-tab active" id="tab-dashboard">Dashboard</button>
+      <button class="nav-tab" id="tab-agents">Agents</button>
+      <button class="nav-tab" id="tab-models">Models</button>
+    </div>
+
+    <!-- Overview stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <div class="card">
+        <div class="text-sm text-muted">Total Tasks</div>
+        <div class="stat-number">{{ stats.total_tasks }}</div>
+      </div>
+      <div class="card">
+        <div class="text-sm text-muted">Active</div>
+        <div class="stat-number">{{ stats.active }}</div>
+      </div>
+      <div class="card">
+        <div class="text-sm text-muted">Completed</div>
+        <div class="stat-number">{{ stats.completed }}</div>
+      </div>
+      <div class="card">
+        <div class="text-sm text-muted">Pending</div>
+        <div class="stat-number" id="stat-pending">0</div>
+      </div>
+    </div>
+
+    <!-- TAB: Dashboard -->
+    <div id="view-dashboard">
+      <!-- Live Agent Log -->
+      <div class="card mb-6">
+        <h2 class="heading heading-sm mb-4">Live Agent Log</h2>
+        <div class="live-log" id="live-log">Waiting for agent activity...</div>
+      </div>
+
+      <!-- New Task -->
+      <div class="card mb-6">
+        <h2 class="heading heading-sm mb-4">New Task</h2>
+        <p class="text-sm text-muted mb-4">Tell the Head Agent what you want done — it will break it into specialist subtasks automatically.</p>
+        <form id="new-task-form" class="space-y-4">
+          <input type="text" name="title" placeholder="e.g. 'Find trending winter products & create Instagram campaign'" required class="input">
+          <textarea name="description" rows="3" placeholder="More details... (optional)" class="input"></textarea>
+          <button type="submit" class="btn btn-primary w-fit">Create Task →</button>
+        </form>
+      </div>
+
+      <!-- Recent Tasks -->
+      <div class="card">
+        <h2 class="heading heading-sm mb-4">Recent Tasks</h2>
+        <div id="recent-tasks">Loading...</div>
+      </div>
+    </div>
+
+    <!-- TAB: Agents (hidden by default) -->
+    <div id="view-agents" class="hidden">
+      <h2 class="heading heading-sm mb-6">Agent Team Status</h2>
+      <div id="agent-list">Loading agents...</div>
+    </div>
+
+    <!-- TAB: Models (hidden by default) -->
+    <div id="view-models" class="hidden">
+      <h2 class="heading heading-sm mb-6">AI Model Router</h2>
+      <p class="text-sm text-muted mb-4">AgentHive auto-switches between models if one fails or rate-limits.</p>
+      <div id="model-list">Loading models...</div>
+    </div>
+  </main>
+
+  <script>
+    // Tab switching
+    const tabs = document.querySelectorAll('.nav-tab');
+    const views = {
+      'tab-dashboard': 'view-dashboard',
+      'tab-agents': 'view-agents',
+      'tab-models': 'view-models'
+    };
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        Object.values(views).forEach(v => document.getElementById(v).classList.add('hidden'));
+        tab.classList.add('active');
+        document.getElementById(views[tab.id]).classList.remove('hidden');
+        if (tab.id === 'tab-agents') loadAgents();
+        if (tab.id === 'tab-models') loadModels();
+      });
+    });
+
+    const token = localStorage.getItem('agenthive_token');
+    async function api(path, opts = {}) {
+      if (!token) return null;
+      const r = await fetch(path, {
+        ...opts,
+        headers: { 'Authorization': 'Bearer ' + token, ...(opts.headers || {}) }
+      });
+      return r.json();
+    }
+
+    async function fetchStats() {
+      const d = await api('/api/tasks/stats');
+      if (!d) return;
+      document.getElementById('stat-total').textContent = d.total;
+      document.getElementById('stat-active').textContent = d.active;
+      document.getElementById('stat-completed').textContent = d.completed;
+      document.getElementById('stat-pending').textContent = d.total - d.active - d.completed;
+    }
+
+    async function fetchTasks() {
+      const tasks = await api('/api/tasks/recent');
+      if (!tasks) return;
+      let html = '';
+      tasks.forEach(t => {
+        const tag = t.status === 'running' ? 'running' : t.status === 'completed' ? 'completed' : 'failed';
+        html += `<div class="task-row"><span class="font-medium">${t.title}</span> <span class="tag tag-${tag}">${t.status}</span> <span class="text-xs text-muted ml-2">${t.created_at ? t.created_at.substring(0,16) : ''}</span></div>`;
+      });
+      document.getElementById('recent-tasks').innerHTML = html || '<p class="text-muted text-sm">No tasks yet.</p>';
+    }
+
+    async function loadAgents() {
+      const d = await api('/api/agents/status');
+      if (!d) return;
+      let html = '';
+      d.agents.forEach(a => {
+        html += `<div class="agent-card">
+          <div class="agent-header">
+            <span class="agent-name">${a.name}</span>
+            <span class="agent-type">${a.type}</span>
+            <span class="agent-status">● ${a.status}</span>
+          </div>
+        </div>`;
+      });
+      document.getElementById('agent-list').innerHTML = html;
+    }
+
+    async function loadModels() {
+      const d = await api('/api/agents/status');
+      if (!d) return;
+      let html = '';
+      d.models.forEach(m => {
+        html += `<div class="agent-card">
+          <div class="agent-header">
+            <span class="agent-name">${m.name}</span>
+            <span class="agent-type">${m.provider}</span>
+            <span class="agent-status">${m.active ? '● Active' : '○ Standby'}</span>
+          </div>
+        </div>`;
+      });
+      document.getElementById('model-list').innerHTML = html;
+    }
+
+    // Poll every 3 seconds
+    setInterval(() => { fetchStats(); fetchTasks(); }, 3000);
+    fetchStats(); fetchTasks();
+
+    // New task form
+    document.getElementById('new-task-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const obj = Object.fromEntries(formData.entries());
+      const r = await api('/api/tasks', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(obj)
+      });
+      if (r) {
+        console.log('Task created:', r);
+        e.target.reset();
+        fetchTasks();
+      } else {
+        alert('Failed to create task');
+      }
+    });
+  </script>
+</body>
+</html>

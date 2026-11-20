@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <title>Pricing — AgentHive</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0a0e17; --bg-subtle:#111827; --fg:#f1f5f9; --muted:#64748b; --accent:#2563eb; --card:#1e293b; --border:#334155; }
+    * { box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--fg); margin:0; }
+    a { color: var(--accent); text-decoration: none; }
+    .btn { display:inline-block; padding:12px 24px; border-radius:8px; font-weight:600; cursor:pointer; transition:.2s; border:none; width:100%; }
+    .btn-primary { background:var(--accent); color:white; }
+    .btn-primary:hover { background:#1d4ed8; }
+    .btn-outline { background:transparent; color:var(--fg); border:1px solid var(--border); }
+    .btn-outline:hover { border-color:#475569; }
+    .card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:32px; }
+    .card.popular { border:2px solid var(--accent); position:relative; }
+    .badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:0.75rem; font-weight:700; background:#10b95f; color:white; }
+    .price { font-size:2rem; font-weight:800; }
+    .nav { display:flex; gap:8px; margin-bottom:8px; }
+    .nav a { padding:6px 12px; border-radius:6px; font-size:0.875rem; color:var(--muted); border:1px solid var(--border); }
+    .nav a.active { background:var(--accent); color:white; border-color:var(--accent); }
+    .razorpay-btn { width:100%; padding:12px; border-radius:6px; font-weight:600; background:var(--accent); color:white; border:none; cursor:pointer; transition:.2s; }
+    .razorpay-btn:hover { background:#1d4ed8; }
+    .check { color:#10b95f; margin-right:8px; }
+    .cross { color:#64748b; margin-right:8px; }
+  </style>
+</head>
+<body class="px-6 py-12">
+  <nav class="flex items-center justify-between mb-12">
+    <a href="/" class="font-bold text-xl tracking-tight">AgentHive</a>
+    <a href="/dashboard" class="text-sm font-medium text-muted">Back to Dashboard</a>
+  </nav>
+
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-16">
+      <h1 class="text-3xl font-bold mb-4">Simple, transparent pricing</h1>
+      <p class="text-muted">Choose the plan that fits your automation needs.</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <!-- Free -->
+      <div class="card">
+        <h3 class="font-bold text-lg mb-2">Starter</h3>
+        <div class="price mb-2">₹0<span class="text-sm font-normal text-muted">/month</span></div>
+        <p class="text-sm text-muted mb-6">For individuals testing automation</p>
+        <ul class="space-y-3 mb-8 text-sm">
+          <li><span class="check">check</span> 5 tasks/month</li>
+          <li><span class="check">check</span> Head Agent + Trend Scout</li>
+          <li><span class="check">check</span> Basic analytics</li>
+          <li><span class="cross">cross</span> Creative Studio</li>
+          <li><span class="cross">cross</span> Social Media Manager</li>
+        </ul>
+        <button class="btn btn-outline" onclick="location.href='/signup'">Get Started</button>
+      </div>
+
+      <!-- Pro -->
+      <div class="card popular">
+        <span class="badge">MOST POPULAR</span>
+        <h3 class="font-bold text-lg mb-2">Pro</h3>
+        <div class="price mb-2">₹499<span class="text-sm font-normal text-muted">/month</span></div>
+        <p class="text-sm text-muted mb-6">For serious creators & sellers</p>
+        <ul class="space-y-3 mb-8 text-sm">
+          <li><span class="check">check</span> 50 tasks/month</li>
+          <li><span class="check">check</span> All 5 agents</li>
+          <li><span class="check">check</span> Creative Studio (ads + video + UGC)</li>
+          <li><span class="check">check</span> Social Media Manager</li>
+          <li><span class="check">check</span> Auto-reply comments & DMs</li>
+          <li><span class="check">check</span> Priority support</li>
+        </ul>
+        <button class="btn btn-primary" onclick="startPayment('pro')">Upgrade to Pro</button>
+      </div>
+
+      <!-- Business -->
+      <div class="card">
+        <h3 class="font-bold text-lg mb-2">Business</h3>
+        <div class="price mb-2">₹1,499<span class="text-sm font-normal text-muted">/month</span></div>
+        <p class="text-sm text-muted mb-6">For teams & agencies</p>
+        <ul class="space-y-3 mb-8 text-sm">
+          <li><span class="check">check</span> Unlimited tasks</li>
+          <li><span class="check">check</span> All 5 agents + priority</li>
+          <li><span class="check">check</span> Multi-user workspace</li>
+          <li><span class="check">check</span> Custom API integration</li>
+          <li><span class="check">check</span> Dedicated support</li>
+          <li><span class="check">check</span> White-label reports</li>
+        </ul>
+        <button class="btn btn-outline" onclick="startPayment('business')">Get Business</button>
+      </div>
+    </div>
+
+    <div class="mt-16 text-center text-sm text-muted">
+      <p>All plans include access to the AgentHive workspace. Upgrade anytime.</p>
+      <p><a href="/dashboard" class="text-accent hover:underline">Already have an account?</a></p>
+    </div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem('agenthive_token');
+
+    async function startPayment(plan) {
+      if (!token) {
+        alert('Please login first');
+        location.href = '/login';
+        return;
+      }
+
+      try {
+        const r = await fetch('/api/payments/create-order', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: JSON.stringify({ plan: plan })
+        });
+
+        const order = await r.json();
+
+        if (order.demo) {
+          alert(order.message);
+          // Auto-activate in demo mode
+          await fetch('/api/payments/verify', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({ plan: plan, razorpay_order_id: order.id, razorpay_payment_id: 'demo', razorpay_signature: 'demo' })
+          });
+          alert('Plan activated in demo mode!');
+          location.href = '/dashboard';
+          return;
+        }
+
+        // Razorpay checkout
+        const options = {
+          key: order.key_id || '', // will be set by backend if configured
+          amount: order.amount,
+          currency: order.currency,
+          name: 'AgentHive',
+          description: plan.charAt(0).toUpperCase() + plan.slice(1) + ' Plan',
+          order_id: order.id,
+          handler: async function (response) {
+            // Verify payment
+            const vr = await fetch('/api/payments/verify', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+              },
+              body: JSON.stringify({
+                plan: plan,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature
+              })
+            });
+            const result = await vr.json();
+            if (result.status === 'success') {
+              alert('Payment successful! Plan activated.');
+              location.href = '/dashboard';
+            } else {
+              alert('Payment verification failed');
+            }
+          },
+          theme: { color: '#2563eb' }
+        };
+
+        const rzp = new window.Razorpay(options);
+        rzp.open();
+      } catch (e) {
+        alert('Payment error: ' + e.message);
+      }
+    }
+  </script>
+</body>
+</html>
